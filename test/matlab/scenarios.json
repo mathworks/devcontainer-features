@@ -1,0 +1,76 @@
+{
+    "install_support_packages_as_container_user": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "ghcr.io/devcontainers/features/common-utils:2": {
+                "installZsh": false,
+                "installOhMyZshConfig": false,
+                "username": "vscode",
+                "userUid": "1000",
+                "userGid": "1000",
+                "upgradePackages": "true"
+            },
+            "ghcr.io/devcontainers/features/python": {
+                "version": "3.9",
+                "installTools": false
+            },
+            "matlab": {
+                "release": "r2023a",
+                "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
+                "installMatlabEngineForPython": true
+            }
+        },
+        "containerUser": "vscode"
+    },
+    "install_jupyter_matlab_proxy": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "matlab": {
+                "installJupyterMatlabProxy": true,
+                "skipMATLABInstall": true
+            }
+        }
+    },
+    "start_in_matlab_proxy_desktop": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "matlab": {
+                "startInDesktop": "test",
+                "networkLicenseManager": "123@abc.com",
+                "skipMATLABInstall": true
+            }
+        },
+        "containerUser": "vscode"
+    },
+    "install_matlab_engine_for_python": {
+        "image": "mathworks/matlab:r2024a",
+        "features": {
+            "matlab": {
+                "destination": "/opt/matlab/R2023b",
+                "skipMATLABInstall": true,
+                "installMatlabEngineForPython": true
+            }
+        },
+        "containerUser": "matlab"
+    },
+    "check_ubi9": {
+        "image": "registry.access.redhat.com/ubi9/ubi:latest",
+        "features": {
+            "ghcr.io/devcontainers/features/common-utils:2": {
+                "installZsh": false,
+                "installOhMyZshConfig": false,
+                "username": "vscode",
+                "userUid": "1000",
+                "userGid": "1000",
+                "upgradePackages": "true"
+            },
+            "matlab": {
+                "release": "r2024a",
+                "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
+                "startInDesktop": "test",
+                "installJupyterMatlabProxy": true
+            }
+        },
+        "containerUser": "vscode"
+    }
+}

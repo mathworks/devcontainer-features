@@ -1,0 +1,107 @@
+{
+    "name": "MATLAB",
+    "id": "matlab",
+    "version": "0.0.7",
+    "description": "Installs MATLAB with supporting packages and tools.",
+    "documentationURL": "https://github.com/mathworks/devcontainer-features",
+    "options": {
+        "release": {
+            "type": "string",
+            "proposals": [
+                "r2024a",
+                "r2023b",
+                "r2023a",
+                "r2022b",
+                "r2022a",
+                "r2021b",
+                "r2021a",
+                "r2020b",
+                "r2020a",
+                "r2019b",
+                "r2019a"
+            ],
+            "default": "r2024a",
+            "description": "MATLAB Release to install."
+        },
+        "products": {
+            "type": "string",
+            "proposals": [
+                "MATLAB",
+                "MATLAB Simulink Signal_Processing_Toolbox"
+            ],
+            "default": "MATLAB",
+            "description": "Products to install, specified as a list of space-separated product names.</br> For details of products, see [MATLAB Package Manager](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/MPM.md#product-installation-options)."
+        },
+        "doc": {
+            "type": "boolean",
+            "default": false,
+            "description": "Flag to install documentation and examples (R2022b and earlier releases)."
+        },
+        "installGpu": {
+            "type": "boolean",
+            "default": false,
+            "description": "Skips installation of GPU libraries when you install Parallel Computing Toolbox (R2023a and later releases)."
+        },
+        "destination": {
+            "type": "string",
+            "default": "/opt/matlab/$RELEASE",
+            "description": "Full path to the installation destination folder."
+        },
+        "installMatlabProxy": {
+            "default": false,
+            "description": "Installs matlab-proxy and its dependencies (R2020b and later releases).",
+            "type": "boolean"
+        },
+        "installJupyterMatlabProxy": {
+            "default": false,
+            "description": "Installs jupyter-matlab-proxy and its dependencies (R2020b and later releases).",
+            "type": "boolean"
+        },
+        "installMatlabEngineForPython": {
+            "default": false,
+            "description": "Installs the MATLAB Engine for Python if the destination option is set correctly.",
+            "type": "boolean"
+        },
+        "startInDesktop": {
+            "default": "false",
+            "description": "Starts matlab-proxy when container starts.",
+            "type": "string",
+            "enum": [
+                "true",
+                "false",
+                "test"
+            ]
+        },
+        "networkLicenseManager": {
+            "type": "string",
+            "proposals": [
+                "port@hostname"
+            ],
+            "default": "",
+            "description": "MATLAB will use the specified Network License Manager."
+        },
+        "skipMATLABInstall": {
+            "type": "boolean",
+            "default": false,
+            "description": "Set to true if you do not want to install MATLAB, for example if you only want to install `matlab-proxy` or `jupyter-matlab-proxy`."
+        }
+    },
+    "postStartCommand": "( ls ~/.startmatlabdesktop >> /dev/null 2>&1 && env MWI_APP_PORT=8888 matlab-proxy-app 2>/dev/null ) || echo 'Will not start matlab-proxy-app...'",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "MathWorks.language-matlab"
+            ],
+            "settings": {
+                "MATLAB.indexWorkspace": true,
+                "MATLAB.installPath": "/usr/local/bin/matlab",
+                "MATLAB.matlabConnectionTiming": "never",
+                "MATLAB.telemetry": true
+            }
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/devcontainers/features/python"
+    ]
+}
