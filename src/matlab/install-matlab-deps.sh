@@ -40,7 +40,7 @@ function get_prerequisite_pkgs() {
 
 function get_base_dependencies_list() {
     local MATLAB_DEPS_OS_VERSION=$(ihf_get_matlab_deps_os)
-    local BASE_DEPS_URL=https://raw.githubusercontent.com/mathworks-ref-arch/container-images/main/matlab-deps/${MATLAB_RELEASE}/${MATLAB_DEPS_OS_VERSION}/base-dependencies.txt
+    local BASE_DEPS_URL=https://raw.githubusercontent.com/mathworks-ref-arch/container-images/main/matlab-deps/${MATLAB_RELEASE,}/${MATLAB_DEPS_OS_VERSION}/base-dependencies.txt
     # Get matlab_deps - if this fails, then we aren't on a supported os
     local PKGS=$(wget -qO- ${BASE_DEPS_URL})
     if [ -z "$PKGS" ]; then

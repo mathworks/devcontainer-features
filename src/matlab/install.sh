@@ -17,12 +17,12 @@ set -eu -o pipefail
 
 ## Set defaults to all the options in the feature.
 
-# r2024a is the latest available release.
-RELEASE="${RELEASE:-"r2024a"}"
+# R2024b is the latest available release.
+RELEASE="${RELEASE:-"R2024b"}"
 PRODUCTS="${PRODUCTS:-"MATLAB"}"
 DOC="${DOC:-"false"}"
 INSTALLGPU="${INSTALLGPU:-"false"}"
-DESTINATION="${DESTINATION:-"/opt/matlab/${RELEASE}"}"
+DESTINATION="${DESTINATION:-"/opt/matlab/${RELEASE^}"}"
 INSTALLMATLABPROXY="${INSTALLMATLABPROXY:-"false"}"
 INSTALLJUPYTERMATLABPROXY="${INSTALLJUPYTERMATLABPROXY:-"false"}"
 INSTALLMATLABENGINEFORPYTHON="${INSTALLMATLABENGINEFORPYTHON:-"false"}"
@@ -30,10 +30,15 @@ STARTINDESKTOP="${STARTINDESKTOP:-"false"}"
 NETWORKLICENSEMANAGER="${NETWORKLICENSEMANAGER:-" "}"
 SKIPMATLABINSTALL="${SKIPMATLABINSTALL:-"false"}"
 
-MATLAB_RELEASE="${RELEASE}"
+MATLAB_RELEASE="${RELEASE^}"
 MATLAB_PRODUCT_LIST="${PRODUCTS}"
 MATLAB_INSTALL_LOCATION="${DESTINATION}"
 
+echo "MATLAB_INSTALL_LOCATION: ${MATLAB_INSTALL_LOCATION}"
+
+# Needed by the MATLAB Engine for Python.
+# Appends to any existing value of LD_LIBRARY_PATH the path where MATLAB is installed by this script.
+_LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+"${LD_LIBRARY_PATH}:"}${MATLAB_INSTALL_LOCATION}/bin/glnxa64"
 
 _CONTAINER_USER_HOME="${_CONTAINER_USER_HOME:-"undefined"}"
 _CONTAINER_USER="${_CONTAINER_USER:-"undefined"}"
@@ -87,17 +92,21 @@ function install_matlab_engine_for_python() {
     # Installing the engine is tricky
     # The installation can fail if the python version does not match the supported release
     declare -A matlabengine_map
-    matlabengine_map['r2024a']="24.1"
-    matlabengine_map['r2023b']="23.2"
-    matlabengine_map['r2023a']="9.14"
-    matlabengine_map['r2022b']="9.13"
-    matlabengine_map['r2022a']="9.12"
-    matlabengine_map['r2021b']="9.11"
-    matlabengine_map['r2021a']="9.10"
-    matlabengine_map['r2020b']="9.9"
+    matlabengine_map['R2024b']="24.2"
+    matlabengine_map['R2024a']="24.1"
+    matlabengine_map['R2023b']="23.2"
+    matlabengine_map['R2023a']="9.14"
+    matlabengine_map['R2022b']="9.13"
+    matlabengine_map['R2022a']="9.12"
+    matlabengine_map['R2021b']="9.11"
+    matlabengine_map['R2021a']="9.10"
+    matlabengine_map['R2020b']="9.9"
     
     install_python_and_pip &&
-    env LD_LIBRARY_PATH=${MATLAB_INSTALL_LOCATION}/bin/glnxa64 \
+    
+    echo "Setting LD_LIBRARY_PATH=${_LD_LIBRARY_PATH}"
+
+    env LD_LIBRARY_PATH=${_LD_LIBRARY_PATH} \
     python3 -m pip install matlabengine==${matlabengine_map[$MATLAB_RELEASE]}.*
 }
 
@@ -216,7 +225,7 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
     
     # Handle GPU installation
     if [ "${INSTALLGPU}" == "false" ]; then
-        RELEASES_THAT_SUPPORT_NOGPU=("r2024a" "r2023b" "r2023a")
+        RELEASES_THAT_SUPPORT_NOGPU=("R2024b" "R2024a" "R2023b" "R2023a")
         # The value variable is assigned a regex that matches the exact value
         value="\<${MATLAB_RELEASE}\>"
         if [[ ${RELEASES_THAT_SUPPORT_NOGPU[@]} =~ $value ]]; then
@@ -242,6 +251,8 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
         create_home_folder_for_container_user
         
         echo "Proceeding to install matlab as '$_CONTAINER_USER'..."
+
+        echo "Install location for MATLAB: ${MATLAB_INSTALL_LOCATION}"
         
         # Switching to container user
         su $_CONTAINER_USER

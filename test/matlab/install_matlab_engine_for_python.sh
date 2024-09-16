@@ -5,10 +5,10 @@
 #
 # This test file will be executed against one of the scenarios devcontainer.json test that
 # includes the 'matlab' feature with
-# "image": "mathworks/matlab:r2024a",
+# "image": "mathworks/matlab:R2024a",
 # "features": {
 #     "matlab": {
-#         "destination": "/opt/matlab/R2023b",
+#         "destination": "/opt/matlab/R2024a",
 #         "skipMATLABInstall": true,
 #         "installMatlabEngineForPython": true
 #     }
@@ -44,7 +44,7 @@ reportResults
 
 
 #### Commands to test in container:
-# RELEASE=r2024a
+# RELEASE=R2024a
 # RUN_INSTALL_SCRIPT="sudo env INSTALLMATLABENGINEFORPYTHON=true SKIPMATLABINSTALL=true _CONTAINER_USER=matlab \
 # _CONTAINER_USER_HOME=/home/matlab DESTINATION=/opt/matlab/${RELEASE^} RELEASE=${RELEASE} \
 # ~/install/install.sh "

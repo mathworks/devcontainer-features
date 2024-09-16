@@ -136,7 +136,7 @@ function ihf_get_remove_cmd() {
 # returns "true/false" string if MATLAB_RELEASE is valid
 function ihf_is_valid_matlab_release() {
     # List of supported MATLAB_RELEASE values
-    local _SUPPORTED_MATLAB_RELEASES=("r2024a" "r2023b" "r2023a" "r2022b" "r2022a" "r2021b" "r2021a" "r2020b" "r2020a" "r2019b" "r2019a")
+    local _SUPPORTED_MATLAB_RELEASES=("R2024b" "R2024a" "R2023b" "R2023a" "R2022b" "R2022a" "R2021b" "R2021a" "R2020b" "R2020a" "R2019b" "R2019a")
     
     ## Validate MATLAB_RELEASE
     if [ -z "$MATLAB_RELEASE" ]; then
@@ -289,11 +289,11 @@ function test_script() {
         ihf_pkg_mgr_update
         
         
-        MATLAB_RELEASE=r2024a
+        MATLAB_RELEASE=R2024a
         is_release_valid=$(ihf_is_valid_matlab_release)
         echo "Is $MATLAB_RELEASE valid? Ans: $is_release_valid"
         
-        MATLAB_RELEASE=r2023bd
+        MATLAB_RELEASE=R2023bd
         echo "Is $MATLAB_RELEASE valid? Ans: $(ihf_is_valid_matlab_release)"
         
         LINUX_DISTRO=$(ihf_is_debian_or_rhel)

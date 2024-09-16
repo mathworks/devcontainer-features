@@ -16,7 +16,8 @@ jobs:
           - matlab
         baseImage:
           - debian:latest
-          - ubuntu:latest
+          # Update to ubuntu:latest when R2024b support for it has been released in matlab-deps
+          - ubuntu:22.04
           - mcr.microsoft.com/devcontainers/base:ubuntu
     steps:
       - uses: actions/checkout@v3

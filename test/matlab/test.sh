@@ -19,9 +19,9 @@
 #
 # Thus, the value of all options will fall back to the default value in
 # the Feature's 'devcontainer-feature.json'.
-# For the 'matlab' feature, that means the default version installed in r2024a
+# For the 'matlab' feature, that means the default version installed in R2024b
 # These are the default values that are passed into the feature:
-#     RELEASE="r2024a"
+#     RELEASE="R2024b"
 #     OS="ubuntu22.04"
 #     PRODUCTS="MATLAB"
 #     DOC="false"
@@ -56,7 +56,7 @@ source dev-container-features-test-lib
 # Feature-specific tests
 # The 'check' command comes from the dev-container-features-test-lib. Syntax is...
 # check <LABEL> <cmd> [args...]
-check "r2024a is installed" bash -c "cat /opt/matlab/r2024a/VersionInfo.xml | grep '<release>R2023b</release>'"
+check "R2024b is installed" bash -c "cat /opt/matlab/R2024b/VersionInfo.xml | grep '<release>R2024b</release>'"
 
 # Report results
 # If any of the checks above exited with a non-zero exit code, the test will fail.

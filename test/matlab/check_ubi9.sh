@@ -4,7 +4,7 @@
 #-------------------------------------------------------------------------------------------------------------
 #
 # This test file will be executed against one of the scenarios devcontainer.json test that
-# includes the 'matlab' feature with the r2024a release, and a support package installed.
+# includes the 'matlab' feature with the R2024a release, and a support package installed.
 # Support package installation is special, because these packages need to be installed into
 # the end users HOME folder and not into the root users folders. Installing into root will
 # result in users being unable to access the Support Packages.
@@ -21,7 +21,7 @@
 #                 "upgradePackages": "true"
 #             },
 #             "matlab": {
-#                 "release": "r2024a",
+#                 "release": "R2024a",
 #                 "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
 #                 "startInDesktop": "test"
 #             }
@@ -50,10 +50,10 @@ source dev-container-features-test-lib
 # Verify that the right release is installed in the expected location.
 check "is ubi9 " bash -c "cat /etc/os-release | grep 'ID.*rhel' "
 
-check "r2024a is installed" bash -c "cat /opt/matlab/r2024a/VersionInfo.xml | grep '<release>R2023b</release>'"
+check "R2024a is installed" bash -c "cat /opt/matlab/R2024a/VersionInfo.xml | grep '<release>R2024a</release>'"
 
 # Verify MATLAB_Support_Package_for_Android_Sensors is installed at the right place (ie: The home folder for the containerUser : vscode )
-check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/SupportPackages/R2023b/ssiSearchFolders | head -1 | grep 'toolbox/matlab/hardware/shared/hwsdk'"
+check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/SupportPackages/R2024a/ssiSearchFolders | head -1 | grep 'toolbox/matlab/hardware/shared/hwsdk'"
 
 
 check "python3 is installed" python3 --version

@@ -1,26 +1,27 @@
 {
     "name": "MATLAB",
     "id": "matlab",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Installs MATLAB with supporting packages and tools.",
     "documentationURL": "https://github.com/mathworks/devcontainer-features",
     "options": {
         "release": {
             "type": "string",
             "proposals": [
-                "r2024a",
-                "r2023b",
-                "r2023a",
-                "r2022b",
-                "r2022a",
-                "r2021b",
-                "r2021a",
-                "r2020b",
-                "r2020a",
-                "r2019b",
-                "r2019a"
+                "R2024b",
+                "R2024a",
+                "R2023b",
+                "R2023a",
+                "R2022b",
+                "R2022a",
+                "R2021b",
+                "R2021a",
+                "R2020b",
+                "R2020a",
+                "R2019b",
+                "R2019a"
             ],
-            "default": "r2024a",
+            "default": "R2024b",
             "description": "MATLAB Release to install."
         },
         "products": {
@@ -44,8 +45,8 @@
         },
         "destination": {
             "type": "string",
-            "default": "/opt/matlab/$RELEASE",
-            "description": "Full path to the installation destination folder."
+            "default": "",
+            "description": "Full path to the installation destination folder. Default: /opt/matlab/${RELEASE^}"
         },
         "installMatlabProxy": {
             "default": false,

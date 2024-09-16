@@ -1,4 +1,12 @@
 {
+    "install_release_on_ubuntu":{
+        "image": "ubuntu:22.04",
+        "features":{
+            "matlab":{
+                "release" : "r2022b"
+            }
+        }
+    },
     "install_support_packages_as_container_user": {
         "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
         "features": {
@@ -11,11 +19,11 @@
                 "upgradePackages": "true"
             },
             "ghcr.io/devcontainers/features/python": {
-                "version": "3.9",
+                "version": "os-provided",
                 "installTools": false
             },
             "matlab": {
-                "release": "r2023a",
+                "release": "r2022b",
                 "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
                 "installMatlabEngineForPython": true
             }
@@ -46,7 +54,8 @@
         "image": "mathworks/matlab:r2024a",
         "features": {
             "matlab": {
-                "destination": "/opt/matlab/R2023b",
+                "release": "r2024a",
+                "destination": "/opt/matlab/R2024a",
                 "skipMATLABInstall": true,
                 "installMatlabEngineForPython": true
             }
