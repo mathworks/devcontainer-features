@@ -30,6 +30,7 @@ INSTALLMATLABENGINEFORPYTHON="${INSTALLMATLABENGINEFORPYTHON:-"false"}"
 STARTINDESKTOP="${STARTINDESKTOP:-"false"}"
 NETWORKLICENSEMANAGER="${NETWORKLICENSEMANAGER:-" "}"
 SKIPMATLABINSTALL="${SKIPMATLABINSTALL:-"false"}"
+ENABLETELEMETRY="${ENABLETELEMETRY:-"true"}"
 
 MATLAB_RELEASE="${RELEASE^}"
 MATLAB_PRODUCT_LIST="${PRODUCTS}"
@@ -333,6 +334,13 @@ fi
 if [ "${INSTALLMATLABENGINEFORPYTHON}" == "true" ]; then
     echo "Installing matlabengine"
     install_matlab_engine_for_python
+fi
+
+if [ "$ENABLETELEMETRY" == 'true' ]; then
+    echo "Enabling Telemetry"
+    # To learn more about the data MathWorks collects to improve its products, see the User Experience Information FAQs:
+    # https://mathworks.com/support/faq/user_experience_information_faq.html
+    updaterc 'export MW_DDUX_FORCE_ENABLE=true && export MW_CONTEXT_TAGS="${MW_CONTEXT_TAGS};MATLAB:DEVCONTAINER_FEATURE:V1"'
 fi
 
 popd
