@@ -1,13 +1,14 @@
 {
     "name": "MATLAB",
     "id": "matlab",
-    "version": "0.3.1",
+    "version": "0.4.0",
     "description": "Installs MATLAB with supporting packages and tools.",
     "documentationURL": "https://github.com/mathworks/devcontainer-features",
     "options": {
         "release": {
             "type": "string",
             "proposals": [
+                "R2026a",
                 "R2025b",
                 "R2025a",
                 "R2024b",
@@ -23,7 +24,7 @@
                 "R2019b",
                 "R2019a"
             ],
-            "default": "R2025b",
+            "default": "R2026a",
             "description": "MATLAB Release to install."
         },
         "products": {

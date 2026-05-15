@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #-------------------------------------------------------------------------------------------------------------
-# Copyright 2024-2025 The MathWorks, Inc.
+# Copyright 2024-2026 The MathWorks, Inc.
 #-------------------------------------------------------------------------------------------------------------
 # NOTE: The 'install.sh' entrypoint script is always executed as the root user.
 
@@ -17,8 +17,8 @@ set -eu -o pipefail
 
 ## Set defaults to all the options in the feature.
 
-# R2025b is the latest available release.
-RELEASE="${RELEASE:-"R2025b"}"
+# MATLAB Version R2026a is the latest available release.
+RELEASE="${RELEASE:-"R2026a"}"
 PRODUCTS="${PRODUCTS:-"MATLAB"}"
 DOC="${DOC:-"false"}"
 INSTALLGPU="${INSTALLGPU:-"false"}"
@@ -127,6 +127,7 @@ function install_matlab_engine_for_python() {
     # TODO: Skip installation if MATLAB Engine for Python does not support of Python version
     # See: https://mathworks.com/support/requirements/python-compatibility.html
     declare -A matlabengine_map
+    matlabengine_map['R2026a']="26.1"
     matlabengine_map['R2025b']="25.2"
     matlabengine_map['R2025a']="25.1"
     matlabengine_map['R2024b']="24.2"

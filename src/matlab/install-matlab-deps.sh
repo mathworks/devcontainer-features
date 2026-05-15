@@ -2,7 +2,7 @@
 # This script install the OS dependencies required by MATLAB for the release specified in the
 # environment variable MATLAB_RELEASE on any linux OS that is dervied from Ubuntu or RHEL
 #-------------------------------------------------------------------------------------------------------------
-# Copyright 2024-2025 The MathWorks, Inc.
+# Copyright 2024-2026 The MathWorks, Inc.
 #-------------------------------------------------------------------------------------------------------------
 
 set -eu -o pipefail
@@ -35,19 +35,38 @@ function print_os_info(){
 
 function get_prerequisite_pkgs() {
     # Returns the list of pre-requisite packages required to install matlab-deps
-    echo "wget unzip ca-certificates"
+    local PKGS="wget unzip ca-certificates"
+    # mpm v2026.3 onwards requires libatomic
+    if [ "$(ihf_is_debian_or_rhel)" == "rhel" ]; then
+        PKGS="${PKGS} libatomic"
+    else
+        PKGS="${PKGS} libatomic1"
+    fi
+    echo "$PKGS"
 }
 
 function get_base_dependencies_list() {
     local MATLAB_DEPS_OS_VERSION=$(ihf_get_matlab_deps_os)
-    local BASE_DEPS_URL=https://raw.githubusercontent.com/mathworks-ref-arch/container-images/main/matlab-deps/${MATLAB_RELEASE,}/${MATLAB_DEPS_OS_VERSION}/base-dependencies.txt
-    # Get matlab_deps - if this fails, then we aren't on a supported os
-    local PKGS=$(wget -qO- ${BASE_DEPS_URL})
-    # if Debian 13, then remove packages which have dpdk in their name
-    if ihf_is_debian_13; then
+    local BASE_URL="https://raw.githubusercontent.com/mathworks-ref-arch/container-images/main/matlab-deps/${MATLAB_RELEASE,}/${MATLAB_DEPS_OS_VERSION}"
+    local PKGS=""
+
+    # First try to fetch dependency file based on arch.
+    # If the dependency file for the specific arch version is not present then fallback to using the default dependency file.
+    local ARCH=$(ihf_is_amd64_or_arm64)
+    if [ "${ARCH}" != "unknown" ]; then
+        local ARCH_DEPS_URL="${BASE_URL}/base-dependencies-${ARCH}.txt"
+        PKGS=$(wget -qO- "${ARCH_DEPS_URL}" 2>/dev/null || true)
+    fi
+    if [ -z "${PKGS}" ]; then
+        local GENERIC_DEPS_URL="${BASE_URL}/base-dependencies.txt"
+        PKGS=$(wget -qO- "${GENERIC_DEPS_URL}" 2>/dev/null || true)
+    fi
+
+    if ihf_is_matlab_release_older_than R2026a && ihf_is_debian_13; then
         PKGS=$(echo $PKGS | tr ' ' '\n' | grep -v 'dpdk' | tr '\n' ' ')
     fi
-    if [ -z "$PKGS" ]; then
+
+    if [ -z "${PKGS}" ]; then
         ihf_print_and_exit "${MATLAB_DEPS_OS_VERSION} is not a supported OS for MATLAB ${MATLAB_RELEASE} ."
     fi
     echo $PKGS
@@ -62,7 +81,7 @@ function install_matlab_deps() {
     
     ihf_install_packages "$PREREQ_PACKAGES"
     
-    echo "Get list of dependencies from ${MATLAB_RELEASE}/${MATLAB_DEPS_OS_VERSION}/base-dependencies.txt"
+    echo "Get list of dependencies for ${MATLAB_RELEASE} on ${MATLAB_DEPS_OS_VERSION}"
     local BASE_DEPS_PKGS=$(get_base_dependencies_list)
     ihf_install_packages "$BASE_DEPS_PKGS"
     

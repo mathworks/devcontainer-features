@@ -1,6 +1,6 @@
 #!/bin/bash
 #-------------------------------------------------------------------------------------------------------------
-# Copyright 2024-2025 The MathWorks, Inc.
+# Copyright 2024-2026 The MathWorks, Inc.
 #-------------------------------------------------------------------------------------------------------------
 #
 # This test file will be executed against one of the scenarios devcontainer.json test that
@@ -34,7 +34,7 @@ check "is ubi9 " bash -c "cat /etc/os-release | grep 'ID.*rhel' "
 check "R2024a is installed" bash -c "cat /opt/matlab/R2024a/VersionInfo.xml | grep '<release>R2024a</release>'"
 
 # Verify MATLAB_Support_Package_for_Android_Sensors is installed at the right place (ie: The home folder for the containerUser : vscode )
-check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/SupportPackages/R2024a/ssiSearchFolders | head -1 | grep 'toolbox/matlab/hardware/shared/hwsdk'"
+check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/SupportPackages/R2024a/ssiSearchFolders | tail -1 | grep 'toolbox/matlab/hardware/supportpackages/sharedmobilesensor'"
 
 check "is startInDesktop marker file present" bash -c "ls ~/.teststartmatlabdesktop"
 

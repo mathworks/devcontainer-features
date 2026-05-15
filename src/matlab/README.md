@@ -15,7 +15,7 @@ Installs MATLAB with supporting packages and tools.
 
 | Options Id | Description | Type | Default Value |
 |-----|-----|-----|-----|
-| release | MATLAB Release to install. | string | R2025b |
+| release | MATLAB Release to install. | string | R2026a |
 | products | Products to install, specified as a list of space-separated product names.</br> For details, see [Input Arguments to MATLAB Package Manager (MathWorks)](https://mathworks.com/help/install/ug/mpminstall.html#mw_982f28f7-dc9f-482e-83c7-63c46ad9126f). | string | MATLAB |
 | doc | Flag to install documentation and examples (R2022b and earlier releases). | boolean | false |
 | installGpu | Skips installation of GPU libraries when you install Parallel Computing Toolbox (R2023a and later releases). | boolean | false |

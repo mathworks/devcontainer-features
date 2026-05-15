@@ -59,6 +59,6 @@ Dev Container Features:
 
 ----
 
-Copyright 2024 The MathWorks, Inc.
+Copyright 2024-2026 The MathWorks, Inc.
 
 ----

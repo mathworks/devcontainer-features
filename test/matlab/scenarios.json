@@ -15,7 +15,7 @@
                 "installTools": false
             },
             "matlab": {
-                "release": "r2025b",
+                "release": "r2026a",
                 "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
                 "installMatlabEngineForPython": true,
                 "installJupyterMatlabProxy": true,
@@ -39,6 +39,33 @@
             },
             "matlab": {
                 "release": "r2024a",
+                "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
+                "installMatlabEngineForPython": true,
+                "installJupyterMatlabProxy": true,
+                "installJupyterlab": true,
+                "startInDesktop": "test",
+                "networkLicenseManager": "123@abc.com"
+            }
+        },
+        "containerUser": "vscode"
+    },
+    "check_debian12": {
+        "image": "mcr.microsoft.com/devcontainers/base:debian-12",
+        "features": {
+            "ghcr.io/devcontainers/features/common-utils:2": {
+                "installZsh": false,
+                "installOhMyZshConfig": false,
+                "username": "vscode",
+                "userUid": "1000",
+                "userGid": "1000",
+                "upgradePackages": "true"
+            },
+            "ghcr.io/devcontainers/features/python": {
+                "version": "os-provided",
+                "installTools": false
+            },
+            "matlab": {
+                "release": "r2026a",
                 "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
                 "installMatlabEngineForPython": true,
                 "installJupyterMatlabProxy": true,

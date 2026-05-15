@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #-------------------------------------------------------------------------------------------------------------
-# Copyright 2024-2025 The MathWorks, Inc.
+# Copyright 2024-2026 The MathWorks, Inc.
 #-------------------------------------------------------------------------------------------------------------
 # Helpers functions to encapsulate OS specific installation
 
@@ -25,6 +25,7 @@ function ihf_print_and_exit() {
     exit 1
 }
 
+# Get the os for fetching matlab-deps, for MATLAB R2025b or older debian uses ubuntu dependencies
 function ihf_get_matlab_deps_os() {
     local LINUX_DISTRO=$(ihf_is_debian_or_rhel)
     local MATLAB_DEPS_OS_VERSION="undefined"
@@ -36,10 +37,15 @@ function ihf_get_matlab_deps_os() {
             if [[ "${ID}" == "ubuntu" ]]; then
                 MATLAB_DEPS_OS_VERSION=${ID}${VERSION_ID}
             elif [[ "${ID}" == "debian" ]]; then
-                local UBUNTU_VERSION_ID=${VERSION_ID/11/20.04}
-                UBUNTU_VERSION_ID=${UBUNTU_VERSION_ID/12/22.04}
-                UBUNTU_VERSION_ID=${UBUNTU_VERSION_ID/13/24.04}
-                MATLAB_DEPS_OS_VERSION=ubuntu${UBUNTU_VERSION_ID}
+            # from MATLAB R2026a ubuntu and debian have separate set of dependencies.
+                if ! ihf_is_matlab_release_older_than R2026a && [[ "${VERSION_ID}" -ge 12 ]]; then
+                    MATLAB_DEPS_OS_VERSION="debian${VERSION_ID}"
+                else
+                    local UBUNTU_VERSION_ID=${VERSION_ID/11/20.04}
+                    UBUNTU_VERSION_ID=${UBUNTU_VERSION_ID/12/22.04}
+                    UBUNTU_VERSION_ID=${UBUNTU_VERSION_ID/13/24.04}
+                    MATLAB_DEPS_OS_VERSION=ubuntu${UBUNTU_VERSION_ID}
+                fi
             fi
         ;;
         rhel)
@@ -135,7 +141,7 @@ function ihf_get_remove_cmd() {
 # returns "true/false" string if MATLAB_RELEASE is valid
 function ihf_is_valid_matlab_release() {
     # List of supported MATLAB_RELEASE values
-    local _SUPPORTED_MATLAB_RELEASES=("R2025b" "R2025a" "R2024b" "R2024a" "R2023b" "R2023a" "R2022b" "R2022a" "R2021b" "R2021a" "R2020b" "R2020a" "R2019b" "R2019a")
+    local _SUPPORTED_MATLAB_RELEASES=("R2026a" "R2025b" "R2025a" "R2024b" "R2024a" "R2023b" "R2023a" "R2022b" "R2022a" "R2021b" "R2021a" "R2020b" "R2020a" "R2019b" "R2019a")
     
     ## Validate MATLAB_RELEASE
     if [ -z "$MATLAB_RELEASE" ]; then
@@ -148,6 +154,39 @@ function ihf_is_valid_matlab_release() {
         else
             echo "false"
         fi
+    fi
+}
+
+# Checks if MATLAB Version in environment variable MATLAB_RELEASE is older the MATLAB Version passed in parameters, 
+# Version should be of the format R<YEAR>a|b
+function ihf_is_matlab_release_older_than() {
+    # ',' converts the MATLAB_RELEASE and the value passed (target) to lower case.
+    local source="${MATLAB_RELEASE,,}"
+    local target="${1,,}"
+
+    local release_pattern='^r[0-9]{4}[ab]$'
+    if [[ ! "${source}" =~ ${release_pattern} ]]; then
+        ihf_print_and_exit "Invalid MATLAB_RELEASE format: '${MATLAB_RELEASE}'. Expected format: R<year><a|b> (e.g., R2026a)"
+    fi
+    if [[ ! "${target}" =~ ${release_pattern} ]]; then
+        ihf_print_and_exit "Invalid target release format: '${1}'. Expected format: R<year><a|b> (e.g., R2026a)"
+    fi
+
+    local source_year="${source:1:4}"
+    local target_year="${target:1:4}"
+    local source_suffix="${source:5:1}"
+    local target_suffix="${target:5:1}"
+
+    if [ "${source_year}" -lt "${target_year}" ]; then
+        return 0
+    elif [ "${source_year}" -gt "${target_year}" ]; then
+        return 1
+    fi
+
+    if [[ "${source_suffix}" < "${target_suffix}" ]]; then
+        return 0
+    else
+        return 1
     fi
 }
 
@@ -173,6 +212,17 @@ function ihf_is_debian_13 {
         # False
         return 1
     fi
+}
+
+# Gets arch and returns amd64, arm64 in all other cases returns unknown 
+function ihf_is_amd64_or_arm64() {
+    local machine
+    machine=$(uname -m)
+    case "${machine}" in
+        x86_64) echo "amd64" ;;
+        aarch64) echo "arm64" ;;
+        *) echo "unknown" ;;
+    esac
 }
 
 function ihf_clean_up() {
@@ -295,27 +345,111 @@ function test_script() {
     if [ $(basename "$0") == "install-helper-functions.sh" ]; then
         echo "=============Starting test"
         echo "me=$(basename "$0")"
-        
+
         echo "testing update"
         ihf_pkg_mgr_update
-        
-        
+
+
         MATLAB_RELEASE=R2024a
         is_release_valid=$(ihf_is_valid_matlab_release)
         echo "Is $MATLAB_RELEASE valid? Ans: $is_release_valid"
-        
+
         MATLAB_RELEASE=R2023bd
         echo "Is $MATLAB_RELEASE valid? Ans: $(ihf_is_valid_matlab_release)"
-        
+
         LINUX_DISTRO=$(ihf_is_debian_or_rhel)
         echo "LINUX_DISTRO: $LINUX_DISTRO"
-        
+
         matlab_deps_os=$(ihf_get_matlab_deps_os)
         echo "The MATLAB deps to install is: $matlab_deps_os"
-        
+
         install_cmd=$(ihf_get_install_cmd)
         echo "install_cmd: $install_cmd"
-        
+
+        arch=$(ihf_is_amd64_or_arm64)
+        echo "Architecture: $arch"
+
+        echo "--- Testing ihf_is_matlab_release_older_than ---"
+
+        MATLAB_RELEASE=R2026a
+        if ihf_is_matlab_release_older_than R2026a; then
+            echo "FAIL: R2026a should NOT be older than R2026a"
+        else
+            echo "PASS: R2026a is not older than R2026a"
+        fi
+
+        MATLAB_RELEASE=R2025b
+        if ihf_is_matlab_release_older_than R2026a; then
+            echo "PASS: R2025b is older than R2026a"
+        else
+            echo "FAIL: R2025b should be older than R2026a"
+        fi
+
+        MATLAB_RELEASE=R2027a
+        if ihf_is_matlab_release_older_than R2026a; then
+            echo "FAIL: R2027a should NOT be older than R2026a"
+        else
+            echo "PASS: R2027a is not older than R2026a"
+        fi
+
+        MATLAB_RELEASE=R2026a
+        if ihf_is_matlab_release_older_than R2026b; then
+            echo "PASS: R2026a is older than R2026b"
+        else
+            echo "FAIL: R2026a should be older than R2026b"
+        fi
+
+        MATLAB_RELEASE=R2026b
+        if ihf_is_matlab_release_older_than R2026a; then
+            echo "FAIL: R2026b should NOT be older than R2026a"
+        else
+            echo "PASS: R2026b is not older than R2026a"
+        fi
+
+        MATLAB_RELEASE=R2026b
+        if ihf_is_matlab_release_older_than R2026b; then
+            echo "FAIL: R2026b should NOT be older than R2026b"
+        else
+            echo "PASS: R2026b is not older than R2026b"
+        fi
+
+        MATLAB_RELEASE=R2025a
+        if ihf_is_matlab_release_older_than r2026A; then
+            echo "PASS: R2025a is older than r2026A (case insensitive)"
+        else
+            echo "FAIL: R2025a should be older than r2026A (case insensitive)"
+        fi
+
+        echo "--- Testing ihf_is_matlab_release_older_than with invalid formats ---"
+
+        MATLAB_RELEASE=R2026
+        if msg=$(ihf_is_matlab_release_older_than R2026a 2>&1); then
+            echo "FAIL: R2026 (no suffix) should be rejected"
+        else
+            echo "PASS: R2026 (no suffix) rejected: $msg"
+        fi
+
+        MATLAB_RELEASE=R2026a
+        if msg=$(ihf_is_matlab_release_older_than R2026 2>&1); then
+            echo "FAIL: target R2026 (no suffix) should be rejected"
+        else
+            echo "PASS: target R2026 (no suffix) rejected: $msg"
+        fi
+
+        MATLAB_RELEASE=2026a
+        if msg=$(ihf_is_matlab_release_older_than R2026a 2>&1); then
+            echo "FAIL: 2026a (no R prefix) should be rejected"
+        else
+            echo "PASS: 2026a (no R prefix) rejected: $msg"
+        fi
+
+        MATLAB_RELEASE=R2026c
+        if msg=$(ihf_is_matlab_release_older_than R2026a 2>&1); then
+            echo "FAIL: R2026c (invalid suffix) should be rejected"
+        else
+            echo "PASS: R2026c (invalid suffix) rejected: $msg"
+        fi
+
         echo "Finished test=============="
     fi
 }
