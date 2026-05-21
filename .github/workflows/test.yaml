@@ -16,7 +16,7 @@ jobs:
           - matlab
         baseImage:
           - debian:latest
-          - mcr.microsoft.com/devcontainers/base:ubuntu
+          - mcr.microsoft.com/devcontainers/base:ubuntu-24.04
           - registry.access.redhat.com/ubi9/ubi:latest
     steps:
       - uses: actions/checkout@v3

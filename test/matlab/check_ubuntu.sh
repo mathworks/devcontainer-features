@@ -15,7 +15,7 @@
 #    devcontainer features test \
 #                   --features matlab   \
 #                   --remote-user root \
-#                   --base-image mcr.microsoft.com/devcontainers/base:ubuntu \
+#                   --base-image mcr.microsoft.com/devcontainers/base:ubuntu-24.04 \
 #                   `pwd`
 # OR:
 # devcontainer features test -p `pwd` -f matlab --filter install_support_packages_as_container_user  --log-level debug

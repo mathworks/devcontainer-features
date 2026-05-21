@@ -43,7 +43,7 @@
 #                   --features matlab   \
 #                   --remote-user root \
 #                   --skip-scenarios   \
-#                   --base-image mcr.microsoft.com/devcontainers/base:ubuntu \
+#                   --base-image mcr.microsoft.com/devcontainers/base:ubuntu-24.04 \
 #                   `pwd`
 #
 set -e
