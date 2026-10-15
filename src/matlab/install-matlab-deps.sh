@@ -84,7 +84,7 @@ function install_matlab_deps() {
     echo "Get list of dependencies for ${MATLAB_RELEASE} on ${MATLAB_DEPS_OS_VERSION}"
     local BASE_DEPS_PKGS=$(get_base_dependencies_list)
     ihf_install_packages "$BASE_DEPS_PKGS"
-    
+
     ihf_clean_up
     # Return 0 to indicate success!
     return 0

@@ -4,9 +4,9 @@
 #-------------------------------------------------------------------------------------------------------------
 #
 # This test file will be executed against one of the scenarios devcontainer.json test that
-# includes the 'matlab' feature with the R2026a release on a Debian 12 base image.
+# includes the 'matlab' feature with the R2026b release on a Debian 12 base image.
 # This verifies the version-aware OS mapping (debian12 directory) and architecture-aware
-# dependency fetching introduced with R2026a.
+# dependency fetching introduced with R2026b.
 #
 
 # This test can be run with the following command:
@@ -32,10 +32,10 @@ check "is debian" bash -c "cat /etc/os-release | grep 'ID=debian'"
 check "debian version is 12" bash -c "cat /etc/os-release | grep 'VERSION_ID=\"12\"'"
 
 # Verify that the right release is installed in the expected location.
-check "R2026a is installed" bash -c "cat /opt/matlab/R2026a/VersionInfo.xml | grep '<release>R2026a</release>'"
+check "R2026b is installed" bash -c "cat /opt/matlab/R2026b/VersionInfo.xml | grep '<release>R2026b</release>'"
 
 # Verify MATLAB_Support_Package_for_Android_Sensors is installed at the right place (ie: The home folder for the containerUser : vscode )
-check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/SupportPackages/R2026a/ssiSearchFolders | tail -1 | grep 'toolbox/matlab/hardware/supportpackages/sharedmobilesensor'"
+check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/SupportPackages/R2026b/ssiSearchFolders | tail -1 | grep 'toolbox/matlab/hardware/supportpackages/sharedmobilesensor'"
 
 check "NLM information is saved in bashrc" bash -c "echo $MLM_LICENSE_FILE | grep 123@abc.com"
 

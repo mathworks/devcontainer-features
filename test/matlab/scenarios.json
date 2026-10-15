@@ -15,8 +15,9 @@
                 "installTools": false
             },
             "matlab": {
-                "release": "r2026a",
-                "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
+                "release": "r2026b",
+                "products": "MATLAB Parallel_Computing_Toolbox MATLAB_Support_Package_for_Android_Sensors",
+                "installGpu": false,
                 "installMatlabEngineForPython": true,
                 "installJupyterMatlabProxy": true,
                 "installJupyterlab": true,
@@ -36,6 +37,10 @@
                 "userUid": "1000",
                 "userGid": "1000",
                 "upgradePackages": "true"
+            },
+            "ghcr.io/devcontainers/features/python": {
+                "version": "3.11",
+                "installTools": false
             },
             "matlab": {
                 "release": "r2024a",
@@ -65,7 +70,7 @@
                 "installTools": false
             },
             "matlab": {
-                "release": "r2026a",
+                "release": "r2026b",
                 "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
                 "installMatlabEngineForPython": true,
                 "installJupyterMatlabProxy": true,

@@ -4,7 +4,8 @@
 #-------------------------------------------------------------------------------------------------------------
 #
 # This test file will be executed against one of the scenarios devcontainer.json test that
-# includes the 'matlab' feature with the R2026a release, and a support package installed.
+# includes the 'matlab' feature with the R2026b release, Parallel Computing Toolbox installed
+# with installGpu set to false, and a support package installed.
 # Support package installation is special, because these packages need to be installed into
 # the end users HOME folder and not into the root users folders. Installing into root will
 # result in users being unable to access the Support Packages.
@@ -29,10 +30,16 @@ source dev-container-features-test-lib
 # check <LABEL> <cmd> [args...]
 
 # Verify that the right release is installed in the expected location.
-check "R2026a is installed" bash -c "cat /opt/matlab/R2026a/VersionInfo.xml | grep '<release>R2026a</release>'"
+check "R2026b is installed" bash -c "cat /opt/matlab/R2026b/VersionInfo.xml | grep '<release>R2026b</release>'"
 
 # Verify MATLAB_Support_Package_for_Android_Sensors is installed at the right place (ie: The home folder for the containerUser : vscode )
-check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/SupportPackages/R2026a/ssiSearchFolders | tail -1 | grep 'toolbox/matlab/hardware/supportpackages/sharedmobilesensor'"
+check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/SupportPackages/R2026b/ssiSearchFolders | tail -1 | grep 'toolbox/matlab/hardware/supportpackages/sharedmobilesensor'"
+
+# Verify Parallel_Computing_Toolbox is installed without GPU libraries (installGpu: false => --no-gpu for R2023a and newer)
+check "Parallel Computing Toolbox is installed" bash -c "ls -d /opt/matlab/R2026b/toolbox/parallel"
+
+# Checks if libcudart is present in the glnxa64 folder. This library is part of the GPU libraries. If it is not present, then the installGpu: false option worked as expected.
+check "GPU libraries are not installed" bash -c "test -z \"\$(find /opt/matlab/R2026b/bin/glnxa64 -name 'libcudart*' -print -quit)\""
 
 check "is startInDesktop marker file present" bash -c "ls ~/.teststartmatlabdesktop"
 

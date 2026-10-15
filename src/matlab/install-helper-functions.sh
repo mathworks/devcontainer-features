@@ -13,7 +13,8 @@ function _ihf_print_installation_status_on_exit() {
     if [ $? -eq 0 ]; then
         printf "Done!\n"
     else
-        printf "$LAST_ERR \nFailed to install for MATLAB ${MATLAB_RELEASE:-undefined} on ${PRETTY_NAME:-undefined}.\nTo debug, call script with SHELLOPTS=xtrace \n"
+        printf "%s\nFailed to install for MATLAB %s on %s.\nTo debug, call script with SHELLOPTS=xtrace\n" \
+            "$LAST_ERR" "${MATLAB_RELEASE:-undefined}" "${PRETTY_NAME:-undefined}" >&2
     fi
 }
 
@@ -21,7 +22,7 @@ trap _ihf_print_installation_status_on_exit EXIT
 
 function ihf_print_and_exit() {
     LAST_ERR="$1"
-    printf "$LAST_ERR, exiting...\n"
+    printf "%s, exiting...\n" "$LAST_ERR" >&2
     exit 1
 }
 
@@ -141,7 +142,7 @@ function ihf_get_remove_cmd() {
 # returns "true/false" string if MATLAB_RELEASE is valid
 function ihf_is_valid_matlab_release() {
     # List of supported MATLAB_RELEASE values
-    local _SUPPORTED_MATLAB_RELEASES=("R2026a" "R2025b" "R2025a" "R2024b" "R2024a" "R2023b" "R2023a" "R2022b" "R2022a" "R2021b" "R2021a" "R2020b" "R2020a" "R2019b" "R2019a")
+    local _SUPPORTED_MATLAB_RELEASES=("R2026b" "R2026a" "R2025b" "R2025a" "R2024b" "R2024a" "R2023b" "R2023a" "R2022b" "R2022a" "R2021b" "R2021a" "R2020b" "R2020a" "R2019b" "R2019a")
     
     ## Validate MATLAB_RELEASE
     if [ -z "$MATLAB_RELEASE" ]; then

@@ -17,8 +17,8 @@ set -eu -o pipefail
 
 ## Set defaults to all the options in the feature.
 
-# MATLAB Version R2026a is the latest available release.
-RELEASE="${RELEASE:-"R2026a"}"
+# MATLAB Version R2026b is the latest available release.
+RELEASE="${RELEASE:-"R2026b"}"
 PRODUCTS="${PRODUCTS:-"MATLAB"}"
 DOC="${DOC:-"false"}"
 INSTALLGPU="${INSTALLGPU:-"false"}"
@@ -127,6 +127,7 @@ function install_matlab_engine_for_python() {
     # TODO: Skip installation if MATLAB Engine for Python does not support of Python version
     # See: https://mathworks.com/support/requirements/python-compatibility.html
     declare -A matlabengine_map
+    matlabengine_map['R2026b']="26.2"
     matlabengine_map['R2026a']="26.1"
     matlabengine_map['R2025b']="25.2"
     matlabengine_map['R2025a']="25.1"
@@ -140,7 +141,7 @@ function install_matlab_engine_for_python() {
     matlabengine_map['R2021a']="9.10"
     matlabengine_map['R2020b']="9.9"
     
-    
+
     env LD_LIBRARY_PATH=${_LD_LIBRARY_PATH} \
     $_PIP_INSTALL matlabengine==${matlabengine_map[$MATLAB_RELEASE]}.*
     echo "Setting LD_LIBRARY_PATH=${_LD_LIBRARY_PATH}"
@@ -268,10 +269,8 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
     
     # Handle GPU installation
     if [ "${INSTALLGPU}" == "false" ]; then
-        RELEASES_THAT_SUPPORT_NOGPU=("R2025a" "R2024b" "R2024a" "R2023b" "R2023a")
-        # The value variable is assigned a regex that matches the exact value
-        value="\<${MATLAB_RELEASE}\>"
-        if [[ ${RELEASES_THAT_SUPPORT_NOGPU[@]} =~ $value ]]; then
+        # Releases R2023a and newer have support for --no-gpu flag.
+        if ! ihf_is_matlab_release_older_than R2023a; then
             echo "'$MATLAB_RELEASE' supports NOGPU flag..."
             ADDITIONAL_MPM_FLAGS="${ADDITIONAL_MPM_FLAGS} --no-gpu "
         else

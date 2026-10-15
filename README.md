@@ -23,20 +23,20 @@ Use the [MATLAB Feature](./src/matlab/README.md) to:
 
 To use the MATLAB Feature, include it in your dev container by specifying the `devcontainer.json` configuration file with your desired MATLAB Feature [Options](./src/matlab/README.md#options).
 
-For example, to install MATLAB `R2024a` with Symbolic Math Toolbox in a `ubuntu` base image, use this `devcontainer.json` configuration:
+For example, to install MATLAB `R2026b` with Symbolic Math Toolbox in a `ubuntu` base image, use this `devcontainer.json` configuration:
 
 ```json
 {
     "image": "ubuntu:latest",
     "features": {
         "ghcr.io/mathworks/devcontainer-features/matlab:0": {
-            "release": "r2024a",
+            "release": "r2026b",
             "products": "MATLAB Symbolic_Math_Toolbox"
         }
     }
 }
 ```
-This configuration installs MATLAB R2024a in your dev container and adds the `matlab` executable to your PATH.
+This configuration installs MATLAB R2026b in your dev container and adds the `matlab` executable to your PATH.
 
 
 ## Related Links
